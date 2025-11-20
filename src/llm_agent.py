@@ -59,8 +59,6 @@ chat_openai_model_kwargs = {
     "presence_penalty": -1,
 }
 
-db = SQLDatabase.from_uri(f"sqlite:///{DATABASE}")
-
 class ValidatingPythonREPLTool(PythonREPLTool):
     """Runs Python code to validate it, but hides execution output."""
 
@@ -83,7 +81,7 @@ def get_chat_openai(model_name):
 
     """
     llm = ChatOpenAI(
-        model_name=model_name,
+        model=model_name,
         temperature=0,
         max_tokens=4000
     )
@@ -104,6 +102,8 @@ def get_sql_toolkit(tool_llm_name: str):
     Returns:
         SQLDatabaseToolkit: An instance of SQLDatabaseToolkit initialized with the provided language model.
     """
+    # Create database connection here (after database file is created)
+    db = SQLDatabase.from_uri(f"sqlite:///{DATABASE}")
     llm_tool = get_chat_openai(model_name=tool_llm_name)
     toolkit = SQLDatabaseToolkit(db=db, llm=llm_tool)
     return toolkit
