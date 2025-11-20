@@ -274,18 +274,36 @@ text-to-sql-agent/
    DATABASE = "ecommerce"
    ```
 
-5. **Deploy & Automatic Database Setup**
+5. **Deploy & Database Considerations**
    
-   a. Click "Deploy!" and wait for the build to complete
-   
-   b. **First Launch**: The app will automatically create the database from CSV files
-      - You'll see "Setting up database for first time..." spinner
-      - This happens only once on first deployment
-      - Subsequent app restarts will use the existing database
-   
-   c. **Verify deployment**: Test with sample queries once database setup completes
+   **For Demo/Testing (Current Setup):**
+   - App automatically creates SQLite database from CSV files on first launch
+   - Shows "Setting up database for first time..." spinner
+   - **⚠️ Limitation**: Streamlit Cloud has ephemeral storage - database recreated on app restarts
 
-   **✅ No manual database setup needed for Streamlit Cloud!**
+   **For Production (Recommended):**
+   
+   Streamlit Cloud doesn't provide persistent database hosting. For production, consider:
+   
+   **Option 1: Cloud Database Services**
+   - **PostgreSQL**: AWS RDS, Google Cloud SQL, Supabase
+   - **MySQL**: PlanetScale, Railway, DigitalOcean
+   - **Serverless**: Neon, Xata, Turso (SQLite-compatible)
+   
+   **Option 2: Update Connection String**
+   ```python
+   # In src/config.py, replace SQLite with cloud database
+   DATABASE_URL = get_config("DATABASE_URL", "postgresql://user:pass@host:5432/dbname")
+   # Then update src/llm_agent.py:
+   db = SQLDatabase.from_uri(DATABASE_URL)
+   ```
+   
+   **Option 3: Data Persistence Services**
+   - Use external APIs for data storage
+   - Connect to existing company databases
+   - Cloud data warehouses (BigQuery, Snowflake)
+
+   **Current setup works for demos - use external DB for production!**
 
 ---
 
