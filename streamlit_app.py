@@ -37,7 +37,7 @@ def init_database():
             with st.spinner("Setting up database for first time..."):
                 from setup_database import create_database
                 create_database()
-                st.success("Database initialized with tables from CSV files!")
+                st.success("Database initialized!")
     except Exception as e:
         # Database doesn't exist or is empty, create it
         with st.spinner("Setting up database for first time..."):
@@ -50,8 +50,10 @@ def init_database():
 # Initialize the database
 conn = init_database()
 
-# Initialize session state
+# Initialize session state - AFTER database is ready
 if 'agent_memory' not in st.session_state:
+    # Store the connection in session state for agents to use
+    st.session_state['db_connection'] = conn
     st.session_state['agent_memory_sql'] = initialize_sql_agent()
     st.session_state['agent_memory_python'] = initialize_python_agent()
 

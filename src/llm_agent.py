@@ -103,14 +103,20 @@ def get_sql_toolkit(tool_llm_name: str):
     Returns:
         SQLDatabaseToolkit: An instance of SQLDatabaseToolkit initialized with the provided language model.
     """
-    # Use the same connection approach as the main app
-    try:
-        conn = st.connection("ecommerce_db", type="sql", url=f"sqlite:///{DATABASE}")
-        # Create LangChain SQLDatabase from the Streamlit connection's engine
-        db = SQLDatabase(conn.session.bind)
-    except Exception as e:
-        # Fallback to direct SQLite connection
-        db = SQLDatabase.from_uri(f"sqlite:///{DATABASE}")
+    # Use the shared database connection from session state if available
+    if hasattr(st, 'session_state') and 'db_connection' in st.session_state:
+        try:
+            conn = st.session_state['db_connection']
+            db = SQLDatabase(conn.session.bind)
+        except Exception:
+            db = SQLDatabase.from_uri(f"sqlite:///{DATABASE}")
+    else:
+        # Try Streamlit connection or fallback
+        try:
+            conn = st.connection("ecommerce_db", type="sql", url=f"sqlite:///{DATABASE}")
+            db = SQLDatabase(conn.session.bind)
+        except Exception:
+            db = SQLDatabase.from_uri(f"sqlite:///{DATABASE}")
 
     llm_tool = get_chat_openai(model_name=tool_llm_name)
     toolkit = SQLDatabaseToolkit(db=db, llm=llm_tool)
