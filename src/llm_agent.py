@@ -9,6 +9,7 @@ from langchain_community.chat_message_histories import SQLChatMessageHistory
 from langchain_community.utilities import SQLDatabase
 from langchain_experimental.tools import PythonREPLTool
 from langchain_openai import ChatOpenAI
+import streamlit as st
 
 from .config import LLM_MODEL_NAME, OPENAI_API_KEY, DATABASE
 
@@ -102,8 +103,15 @@ def get_sql_toolkit(tool_llm_name: str):
     Returns:
         SQLDatabaseToolkit: An instance of SQLDatabaseToolkit initialized with the provided language model.
     """
-    # Create database connection here (after database file is created)
-    db = SQLDatabase.from_uri(f"sqlite:///{DATABASE}")
+    # Use the same connection approach as the main app
+    try:
+        conn = st.connection("ecommerce_db", type="sql", url=f"sqlite:///{DATABASE}")
+        # Create LangChain SQLDatabase from the Streamlit connection's engine
+        db = SQLDatabase(conn.session.bind)
+    except Exception as e:
+        # Fallback to direct SQLite connection
+        db = SQLDatabase.from_uri(f"sqlite:///{DATABASE}")
+
     llm_tool = get_chat_openai(model_name=tool_llm_name)
     toolkit = SQLDatabaseToolkit(db=db, llm=llm_tool)
     return toolkit

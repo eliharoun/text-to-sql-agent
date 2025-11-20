@@ -22,17 +22,33 @@ sys.path.insert(0, parent_dir)
 # Set environment variables
 os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
 
-# Auto-create database if it doesn't exist (for Streamlit Cloud deployment)
-if not os.path.exists(DATABASE):
-    with st.spinner("Setting up database for first time..."):
-        try:
-            # Import and run database setup
+# Initialize database using Streamlit connection
+@st.cache_resource
+def init_database():
+    """Initialize database with Streamlit connection approach"""
+    # Create Streamlit SQL connection
+    conn = st.connection("ecommerce_db", type="sql", url=f"sqlite:///{DATABASE}")
+    
+    # Check if tables exist by trying a simple query
+    try:
+        tables = conn.query("SELECT name FROM sqlite_master WHERE type='table';", ttl=0)
+        if len(tables) == 0:
+            # Database is empty, create tables from CSV files
+            with st.spinner("Setting up database for first time..."):
+                from setup_database import create_database
+                create_database()
+                st.success("Database initialized with tables from CSV files!")
+    except Exception as e:
+        # Database doesn't exist or is empty, create it
+        with st.spinner("Setting up database for first time..."):
             from setup_database import create_database
             create_database()
-            st.success("Database created successfully!")
-        except Exception as e:
-            st.error(f"Error creating database: {e}")
-            st.stop()
+            st.success("Database created and initialized!")
+    
+    return conn
+
+# Initialize the database
+conn = init_database()
 
 # Initialize session state
 if 'agent_memory' not in st.session_state:
