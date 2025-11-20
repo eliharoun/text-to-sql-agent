@@ -22,6 +22,18 @@ sys.path.insert(0, parent_dir)
 # Set environment variables
 os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
 
+# Auto-create database if it doesn't exist (for Streamlit Cloud deployment)
+if not os.path.exists(DATABASE):
+    with st.spinner("Setting up database for first time..."):
+        try:
+            # Import and run database setup
+            from setup_database import create_database
+            create_database()
+            st.success("Database created successfully!")
+        except Exception as e:
+            st.error(f"Error creating database: {e}")
+            st.stop()
+
 # Initialize session state
 if 'agent_memory' not in st.session_state:
     st.session_state['agent_memory_sql'] = initialize_sql_agent()

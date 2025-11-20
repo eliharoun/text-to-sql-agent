@@ -9,3 +9,4 @@ SQLAlchemy
 openai==1.30.5
 python-dotenv
 plotly
+pandas

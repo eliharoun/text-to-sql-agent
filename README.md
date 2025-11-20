@@ -260,8 +260,6 @@ text-to-sql-agent/
       - **Branch**: main
       - **Main file path**: `streamlit_app.py` (auto-detected)
       - **Python version**: 3.9+
-   
-   **Note:** Streamlit Cloud automatically detects `streamlit_app.py` at the root, so you don't need to specify the path manually.
 
 4. **Configure Secrets**
    
@@ -275,16 +273,19 @@ text-to-sql-agent/
    LLM_MODEL_NAME = "gpt-4.1-2025-04-14"
    DATABASE = "ecommerce"
    ```
-   
-   **Note:** The existing `src/config.py` already handles both .env and Streamlit secrets automatically - no code changes needed!
 
-5. **Deploy**
+5. **Deploy & Automatic Database Setup**
    
-   Click "Deploy!" and wait for the build to complete.
+   a. Click "Deploy!" and wait for the build to complete
+   
+   b. **First Launch**: The app will automatically create the database from CSV files
+      - You'll see "Setting up database for first time..." spinner
+      - This happens only once on first deployment
+      - Subsequent app restarts will use the existing database
+   
+   c. **Verify deployment**: Test with sample queries once database setup completes
 
-6. **Verify deployment**
-   
-   Once deployed, test your application with sample queries to ensure everything works correctly.
+   **✅ No manual database setup needed for Streamlit Cloud!**
 
 ---
 
@@ -404,7 +405,7 @@ User: "Now plot that as a bar chart"  # Uses context from previous query
 
 ## Dependencies
 
-The project uses 10 core dependencies (all others are transitive):
+The project uses 12 core dependencies (all others are transitive):
 
 - **streamlit** - Web interface framework
 - **Unidecode** - Text normalization for queries
@@ -416,3 +417,5 @@ The project uses 10 core dependencies (all others are transitive):
 - **SQLAlchemy** - Database ORM for SQL operations
 - **openai==1.30.5** - OpenAI API client (compatible version)
 - **python-dotenv** - Environment variable management
+- **plotly** - Interactive visualizations
+- **pandas** - Data manipulation (required for database setup)
