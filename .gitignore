@@ -49,6 +49,7 @@ venv.bak/
 *.sqlite
 *.sqlite3
 session_history.db
+ecommerce
 
 # Jupyter Notebook
 .ipynb_checkpoints

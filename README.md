@@ -192,9 +192,10 @@ text-to-sql-agent/
 
    **⚠️ Important**: The `.env` file is already in `.gitignore` and will not be committed to version control.
 
-5. **Set up the database**
+5. **Set up the database (REQUIRED)**
    
-   Create and populate the SQLite database from CSV files:
+   **⚠️ Important**: The database file is not included in the repository due to its large size (144MB). You must create it locally:
+   
    ```bash
    # Ensure venv is activated (you should see (venv) in your prompt)
    python setup_database.py
@@ -208,6 +209,8 @@ text-to-sql-agent/
    - **inventory_items**: 246,386 records
    - **distribution_centers**: 10 records
    - **events**: 1,012,244 records
+   
+   **Note**: The `ecommerce` database file is in `.gitignore` to avoid GitHub's 100MB file limit.
 
 6. **Run the application in virtual environment**
    ```bash
@@ -413,4 +416,3 @@ The project uses 10 core dependencies (all others are transitive):
 - **SQLAlchemy** - Database ORM for SQL operations
 - **openai==1.30.5** - OpenAI API client (compatible version)
 - **python-dotenv** - Environment variable management
-
