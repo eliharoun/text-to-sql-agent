@@ -1,0 +1,11 @@
+streamlit
+Unidecode
+langchain==0.2.10
+langchain-community==0.2.5
+langchain-experimental==0.0.61
+langchain-openai==0.1.17
+langchainhub==0.1.20
+SQLAlchemy
+openai==1.30.5
+python-dotenv
+plotly
