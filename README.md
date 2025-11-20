@@ -2,6 +2,8 @@
 
 A natural language interface for querying SQL databases and creating visualizations using AI agents powered by LangChain and OpenAI.
 
+🚀 **[Live Demo on Streamlit Cloud](https://text-to-sql-agent-banty2vkw4pzy22inkghl7.streamlit.app/)** 🚀
+
 ## What This Project Does
 
 This application enables users to interact with an e-commerce SQL database using natural language queries. It leverages two specialized AI agents:
